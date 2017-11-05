@@ -24,21 +24,51 @@ body,html {
     background-size: 100%;
 }
 
-#ui {
+#top-text {
     position: absolute;
     top: 0;
     left: 0;
     color: white;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
 }
 
 .window {
     background: lime;
-    width: 200px;
-    height: 150px;
-    top:calc(100% / 2 - 75px);
-    left:calc(100% / 2 - 100px);
+    width: 500px;
+    height: 350px;
+}
+
+.window .header{
+    width:100%;
+    height:50px;
+}
+.window .header .text{
+    float:left;
+    padding-left:10px;
+    padding-top:17px;
+}
+
+.window .header .actions{
+    text-align: right;
+    float:right;
+}
+
+.window .content {
+    width: 100%;
+    height: 100%;
+    background: lightblue;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+button{
+    padding:10px;
+}
+
+.no-event {
+    pointer-events: none;
+}
+
+#ui-buttons {
+    top: 50%;
     position: absolute;
 }
