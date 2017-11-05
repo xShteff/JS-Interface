@@ -47,5 +47,7 @@ $(document).ready(function () {
             'height': `${size}px`
         });
     });
-
+    
+    container.scrollLeft(5000/2 - minLimit/2);
+    container.scrollTop(5000/2 - $(document).height()/2);
 });
