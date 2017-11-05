@@ -1,0 +1,25 @@
+body,html {
+    font-family: sans-serif;
+    margin: 0;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor:pointer;
+    position:relative;
+}
+
+.container.active {
+    cursor:grabbing;
+    cursor: -webkit-grabbing;
+}
+
+#map {
+    width: 5000px;
+    height: 5000px;
+    background:url("https://steamuserimages-a.akamaihd.net/ugc/171541721468039300/075CBD1AC276B63BD154E6C81C4ED3D3411D2C42/");
+    background-size: 100%;
+}
