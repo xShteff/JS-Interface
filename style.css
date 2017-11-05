@@ -23,3 +23,10 @@ body,html {
     background:url("https://steamuserimages-a.akamaihd.net/ugc/171541721468039300/075CBD1AC276B63BD154E6C81C4ED3D3411D2C42/");
     background-size: 100%;
 }
+
+#ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+}
