@@ -48,6 +48,30 @@ $(document).ready(function () {
                     Map.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
                 });
             },
+            touch: function() {
+                Map.selectors.container.on('touchstart', (e) => {
+                    Map.propertiesisDown = true;
+                    Map.selectors.container.addClass('active');
+                    Map.properties.startX = e.originalEvent.touches[0].pageX - Map.selectors.container.offset().left;
+                    Map.properties.startY = e.originalEvent.touches[0].pageY - Map.selectors.container.offset().top;
+                    Map.properties.scrollTop = Map.selectors.container.scrollTop();
+                    Map.properties.scrollLeft = Map.selectors.container.scrollLeft();
+                }).on('touchcancel', () => {
+                    Map.propertiesisDown = false;
+                    Map.selectors.container.removeClass('active');
+                }).on('touchend', () => {
+                    Map.propertiesisDown = false;
+                    Map.selectors.container.removeClass('active');
+                }).on('touchmove', (e) => {
+                    if (!Map.propertiesisDown) return;
+                    e.preventDefault();
+                    const x = e.originalEvent.touches[0].pageX - Map.selectors.container.offset().left;
+                    const walkX = x - Map.properties.startX;
+                    const y = e.originalEvent.touches[0].pageY - Map.selectors.container.offset().top;
+                    const walkY = y - Map.properties.startY;
+                    Map.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
+                });
+            },
             scroll: function () {
                 Map.selectors.container.on('mousewheel', function (e) {
                     if (e.originalEvent.wheelDelta > 0) {
@@ -76,6 +100,7 @@ $(document).ready(function () {
         },
         init: function() {
             Map.registerEvents.move();
+            Map.registerEvents.touch();
             Map.registerEvents.resizeWindow();
             //Map.registerEvents.scroll();
             Map.centerMap();
