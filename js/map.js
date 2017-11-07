@@ -47,62 +47,68 @@ $(document).ready(function () {
             minLimit: $(document).width(),
             resizeTimer: null
         },
-        setPosition: function (x, y) {
-            Map.selectors.container.scrollLeft(x);
-            Map.selectors.container.scrollTop(y);
-        },
-        centerMap: function () {
-            Map.selectors.container.scrollLeft(5000 / 2 - Map.properties.minLimit / 2);
-            Map.selectors.container.scrollTop(5000 / 2 - $(document).height() / 2)
+        utils: {
+            setPosition: function (x, y) {
+                Map.selectors.container.scrollLeft(x);
+                Map.selectors.container.scrollTop(y);
+            },
+            centerMap: function () {
+                Map.selectors.container.scrollLeft(5000 / 2 - Map.properties.minLimit / 2);
+                Map.selectors.container.scrollTop(5000 / 2 - $(document).height() / 2)
+            },
+            setProperties: (obj) => {
+                Map.properties.startX = (obj['x']) ? obj['x'] : Map.properties.startX;
+                Map.properties.startY = (obj['y']) ? obj['y'] : Map.properties.startY;
+                Map.properties.scrollTop = (obj['scrollTop']) ? obj['scrollTop'] : Map.properties.scrollTop;
+                Map.properties.scrollLeft = (obj['scrollLeft']) ? obj['scrollLeft'] : Map.properties.scrollLeft;
+            },
+            initMove: function () {
+                Map.properties.isDown = true;
+                Map.selectors.container.addClass('active');
+            }, 
+            stopMove: function () {
+                Map.properties.isDown = false;
+                Map.selectors.container.removeClass('active');
+            }
         },
         registerEvents: {
             move: function () {
                 Map.selectors.container.mousedown((e) => {
-                    Map.propertiesisDown = true;
-                    Map.selectors.container.addClass('active');
-                    Map.properties.startX = e.pageX - Map.selectors.container.offset().left;
-                    Map.properties.startY = e.pageY - Map.selectors.container.offset().top;
-                    Map.properties.scrollTop = Map.selectors.container.scrollTop();
-                    Map.properties.scrollLeft = Map.selectors.container.scrollLeft();
-                }).mouseleave(() => {
-                    Map.propertiesisDown = false;
-                    Map.selectors.container.removeClass('active');
-                }).mouseup(() => {
-                    Map.propertiesisDown = false;
-                    Map.selectors.container.removeClass('active');
+                    Map.utils.initMove();
+                    Map.utils.setProperties({
+                        x: e.pageX - Map.selectors.container.offset().left,
+                        y: e.pageY - Map.selectors.container.offset().top,
+                        scrollTop: Map.selectors.container.scrollTop(),
+                        scrollLeft: Map.selectors.container.scrollLeft()
+                    });
                 }).mousemove((e) => {
-                    if (!Map.propertiesisDown) return;
+                    if (!Map.properties.isDown) return;
                     e.preventDefault();
                     const x = e.pageX - Map.selectors.container.offset().left;
                     const walkX = x - Map.properties.startX;
                     const y = e.pageY - Map.selectors.container.offset().top;
                     const walkY = y - Map.properties.startY;
-                    Map.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
-                });
+                    Map.utils.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
+                }).mouseleave(Map.utils.stopMove).mouseup(Map.utils.stopMove);
             },
             touch: function () {
                 Map.selectors.container.on('touchstart', (e) => {
-                    Map.propertiesisDown = true;
-                    Map.selectors.container.addClass('active');
-                    Map.properties.startX = e.originalEvent.touches[0].pageX - Map.selectors.container.offset().left;
-                    Map.properties.startY = e.originalEvent.touches[0].pageY - Map.selectors.container.offset().top;
-                    Map.properties.scrollTop = Map.selectors.container.scrollTop();
-                    Map.properties.scrollLeft = Map.selectors.container.scrollLeft();
-                }).on('touchcancel', () => {
-                    Map.propertiesisDown = false;
-                    Map.selectors.container.removeClass('active');
-                }).on('touchend', () => {
-                    Map.propertiesisDown = false;
-                    Map.selectors.container.removeClass('active');
+                    Map.utils.initMove();
+                    Map.utils.setProperties({
+                        x: e.originalEvent.touches[0].pageX - Map.selectors.container.offset().left,
+                        y: e.originalEvent.touches[0].pageY - Map.selectors.container.offset().top,
+                        scrollTop: Map.selectors.container.scrollTop(),
+                        scrollLeft: Map.selectors.container.scrollLeft()
+                    });
                 }).on('touchmove', (e) => {
-                    if (!Map.propertiesisDown) return;
+                    if (!Map.properties.isDown) return;
                     e.preventDefault();
                     const x = e.originalEvent.touches[0].pageX - Map.selectors.container.offset().left;
                     const walkX = x - Map.properties.startX;
                     const y = e.originalEvent.touches[0].pageY - Map.selectors.container.offset().top;
                     const walkY = y - Map.properties.startY;
-                    Map.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
-                });
+                    Map.utils.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
+                }).on('touchcancel', Map.utils.stopMove).on('touchend', Map.utils.stopMove);
             },
             scroll: function () {
                 Map.selectors.container.on('mousewheel', function (e) {
@@ -140,9 +146,9 @@ $(document).ready(function () {
             Map.registerEvents.resizeWindow();
             //Map.registerEvents.scroll();
             Map.spawnEntity("test", "Placeholder", "images/entity.png", 200, 200, 2500, 2500, () => {
-                WindowManager.initialisedWindows['entity-1'].show()                
+                WindowManager.initialisedWindows['entity-1'].show()
             });
-            Map.centerMap();
+            Map.utils.centerMap();
         }
     }
 
