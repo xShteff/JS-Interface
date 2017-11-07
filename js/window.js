@@ -22,11 +22,7 @@ $(document).ready(() => {
 
         buildHeader(title) {
             var that = this;
-            var closeWindowButton = $("<div>").text('Close').css({
-                'color': 'red',
-                'font-weight': 'bold',
-                'cursor': 'pointer'
-            }).attr({
+            var closeWindowButton = $("<button>").text('X').attr({
                 'title': 'Close'
             }).click(function () {
                 that.hide();
@@ -53,6 +49,8 @@ $(document).ready(() => {
                 left: 'calc(100% / 2 - 250px)',
             }).attr({
                 'id': `window-${id}`
+            }).click(() => {
+                this.setActiveGlobal();
             }).append(this.buildHeader(title)).append(this.buildContent(content));
             return container;
         }
