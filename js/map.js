@@ -1,5 +1,37 @@
 $(document).ready(function () {
+
+    class MapEntity {
+        constructor(id, name, imagePath, width, height, posX, posY, clickEvent) {
+            this.id = id;
+            this.name = name;
+            this.imagePath = imagePath;
+            this.posX = posX;
+            this.posY = posY;
+            this.width = width;
+            this.height = height;
+            this.clickEvent = clickEvent;
+        }
+
+        getImageHtml() {
+            return $('<div>').css({
+                position: 'absolute',
+                top: this.posX,
+                left: this.posY,
+                background: `url("${this.imagePath}")`,
+                'background-size': '100%',
+                width: this.width,
+                height: this.height
+            }).attr({
+                id: this.id
+            }).click(() => {
+                if (this.clickEvent)
+                    this.clickEvent();
+            });
+        }
+    }
+
     var Map = {
+        entities: {},
         selectors: {
             container: $('.container'),
             mapImage: $("#map"),
@@ -48,7 +80,7 @@ $(document).ready(function () {
                     Map.setPosition(Map.properties.scrollLeft - walkX, Map.properties.scrollTop - walkY);
                 });
             },
-            touch: function() {
+            touch: function () {
                 Map.selectors.container.on('touchstart', (e) => {
                     Map.propertiesisDown = true;
                     Map.selectors.container.addClass('active');
@@ -98,11 +130,18 @@ $(document).ready(function () {
                 });
             }
         },
-        init: function() {
+        spawnEntity: function (id, name, imagepath, width, height, posX, posY, event) {
+            this.entities[id] = new MapEntity(id, name, imagepath, width, height, posX, posY, event);
+            Map.selectors.container.append(this.entities[id].getImageHtml());
+        },
+        init: function () {
             Map.registerEvents.move();
             Map.registerEvents.touch();
             Map.registerEvents.resizeWindow();
             //Map.registerEvents.scroll();
+            Map.spawnEntity("test", "Placeholder", "images/entity.png", 200, 200, 2500, 2500, () => {
+                WindowManager.initialisedWindows['entity-1'].show()                
+            });
             Map.centerMap();
         }
     }

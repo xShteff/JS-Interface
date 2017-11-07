@@ -7,6 +7,19 @@ $(document).ready(() => {
             this.content = this.buildContent(content);
             this.window = this.buildWindow(id, title, content);
         }
+
+        setActive() {
+            $(`#window-${this.id}`).addClass('active');
+        }
+
+        setNotActive() {
+            $(`#window-${this.id}`).removeClass('active');
+        }
+
+        setActiveGlobal() {
+            WindowManager.setActive(this.id);            
+        }
+
         buildHeader(title) {
             var that = this;
             var closeWindowButton = $("<div>").text('Close').css({
@@ -30,13 +43,16 @@ $(document).ready(() => {
         buildWindow(id, title, content) {
             var container = $("<div>").addClass("window").draggable({
                 containment: 'body',
-                handle: '.header'
+                handle: '.header',
+                start: () => {
+                    this.setActiveGlobal();
+                }
             }).css({
                 position: 'absolute',
                 top: 'calc(100% / 2 - 175px)',
                 left: 'calc(100% / 2 - 250px)',
             }).attr({
-                'id': id
+                'id': `window-${id}`
             }).append(this.buildHeader(title)).append(this.buildContent(content));
             return container;
         }
@@ -66,11 +82,16 @@ $(document).ready(() => {
         addWindow: function (id, title, body) {
             WindowManager.initialisedWindows[id] = new xWindow(id, title, body);
             WindowManager.initialisedWindows[id].init();
+            WindowManager.initialisedWindows[id].hide();
+        },
+        setActive: function(id) {
+            $('.window').removeClass('active');
+            WindowManager.initialisedWindows[id].setActive();
         }
     }
     
     WindowManager.addWindow('test', 'Hello World', "Well hello there! This is small 'window' example. It can be moved by using the handle (the green part). Click 'close' to close the window. Pretty self explanatory, I guess.");
-
+    WindowManager.addWindow('entity-1', "You found a custom entity!", "At one point I might add multiple entities. But for now, you only get one.")
     $('#openWindow').click(() => {
         WindowManager.initialisedWindows['test'].show()
     })
